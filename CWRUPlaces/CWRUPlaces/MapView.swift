@@ -32,14 +32,14 @@ struct MapView: View {
                         Text(location.user)
                             .font(.caption)
                             .bold()
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(.blue)
 
                         Text(location.label)
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
                     .padding(6)
-                    .background(.blue, in: RoundedRectangle(cornerRadius: 8))
+                    .background( in: RoundedRectangle(cornerRadius: 8))
                     .shadow(radius: 3)
                     .opacity(5.0)
                 }
