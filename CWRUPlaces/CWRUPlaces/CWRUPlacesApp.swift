@@ -11,7 +11,7 @@ import SwiftUI
 struct CWRUPlacesApp: App {
     var body: some Scene {
         WindowGroup {
-            PostLocationView()
+            ContentView()
         }
     }
 }

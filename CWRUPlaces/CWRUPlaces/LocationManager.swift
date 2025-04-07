@@ -7,13 +7,14 @@
 
 import CoreLocation
 import MapKit
-import Combine
+import Observation
 
-class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+@Observable
+class LocationManager: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
 
-    @Published var location: CLLocationCoordinate2D?
-    @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+    var location: CLLocationCoordinate2D?
+    var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
     override init() {
         super.init()
@@ -36,5 +37,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         location = newLocation.coordinate
     }
 }
+
 
 

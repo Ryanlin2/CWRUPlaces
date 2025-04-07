@@ -10,10 +10,12 @@ import SwiftUI
 
 
 
-struct PostLocationView: View {
-    @ObservedObject var locationManager = LocationManager()
-    @StateObject var viewModel = LocationViewModel()
+import SwiftUI
+import Observation
 
+struct PostLocationView: View {
+    @State private var locationManager = LocationManager()
+    @State private var viewModel = LocationViewModel()
     @State private var labelText = ""
 
     var body: some View {
@@ -43,10 +45,13 @@ struct PostLocationView: View {
             .padding()
             .background(Color(.systemBackground))
         }
+        .onAppear {
+            viewModel.fetchLocations()
+            viewModel.startTimer()
+        }
     }
 }
 
-#Preview{
+#Preview {
     PostLocationView()
 }
-

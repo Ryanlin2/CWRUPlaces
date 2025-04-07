@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import Observation
 
-class LocationViewModel: ObservableObject {
-    @Published var locations: [UserLocation] = []
+@Observable
+class LocationViewModel {
+    var locations: [UserLocation] = []
 
     let url = URL(string: "https://caslab.case.edu/392/map.php")!
     
@@ -25,7 +27,6 @@ class LocationViewModel: ObservableObject {
     private var timer: Timer?
 
     func startTimer() {
-        // Optional: avoid multiple timers
         timer?.invalidate()
 
         timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { _ in
@@ -33,7 +34,6 @@ class LocationViewModel: ObservableObject {
         }
     }
 
-    
     func postLocation(post: PostLocation) {
         guard let url = URL(string: "https://caslab.case.edu/392/map.php") else { return }
 
@@ -53,7 +53,7 @@ class LocationViewModel: ObservableObject {
 
                 if httpResponse.statusCode == 200 {
                     DispatchQueue.main.async {
-                        self.fetchLocations() // Refresh after successful post
+                        self.fetchLocations()
                     }
                 } else if httpResponse.statusCode == 401 {
                     print("⚠️ Unauthorized. Check your user/pass!")
@@ -61,5 +61,4 @@ class LocationViewModel: ObservableObject {
             }
         }.resume()
     }
-
 }

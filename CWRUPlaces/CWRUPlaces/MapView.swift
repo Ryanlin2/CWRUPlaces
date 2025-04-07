@@ -8,40 +8,61 @@
 import Foundation
 import MapKit
 import SwiftUI
+import Observation
 
 struct MapView: View {
-    @ObservedObject var viewModel: LocationViewModel
-    @ObservedObject var locationManager = LocationManager()
+    var viewModel: LocationViewModel
+    @State private var locationManager = LocationManager()
 
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 41.507, longitude: -81.61),
-        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+    @State private var cameraPosition: MapCameraPosition = .region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 41.507, longitude: -81.61),
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        )
     )
 
     var body: some View {
-        Map(coordinateRegion: $region,
-            showsUserLocation: true,
-            annotationItems: viewModel.locations
-        ) { location in
-            MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)) {
-                VStack {
-                    Text(location.user).bold()
-                    Text(location.label).font(.caption)
+        Map(position: $cameraPosition) {
+            ForEach(viewModel.locations) { location in
+                Annotation(
+                    location.user,
+                    coordinate: CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)
+                ) {
+                    VStack(spacing: 2) {
+                        Text(location.user)
+                            .font(.caption)
+                            .bold()
+                            .foregroundStyle(.primary)
+
+                        Text(location.label)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(6)
+                    .background(.blue, in: RoundedRectangle(cornerRadius: 8))
+                    .shadow(radius: 3)
+                    .opacity(5.0)
                 }
-                .padding(5)
-                .background(Color.white)
-                .cornerRadius(10)
-                .shadow(radius: 5)
             }
         }
+        .mapStyle(.standard)
+        .edgesIgnoringSafeArea(.top)
         .onAppear {
             viewModel.fetchLocations()
             viewModel.startTimer()
         }
-        .onReceive(locationManager.$location) { loc in
-            guard let loc = loc else { return }
-            region.center = loc
+        .onChange(of: locationManager.location) {
+            if let loc = locationManager.location {
+                withAnimation {
+                    cameraPosition = .region(
+                        MKCoordinateRegion(
+                            center: loc,
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        )
+                    )
+                }
+            }
         }
+
     }
 }
-
