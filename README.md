@@ -63,5 +63,3 @@ A modern **iOS 17** SwiftUI app demonstrating real-time location tracking, custo
 
 ---
 
-## Project Structure
-
